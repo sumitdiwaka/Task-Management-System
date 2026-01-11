@@ -1,0 +1,57 @@
+/* Import Tailwind CSS */
+@import "tailwindcss";
+
+/* Custom styles can go here */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom utility classes if needed */
+.btn {
+  @apply font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.input-field {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}/* EMERGENCY FIX FOR MODAL Z-INDEX */
+.fixed.inset-0.z-9999 {
+  z-index: 9999 !important;
+}
+
+.z-10000 {
+  z-index: 10000 !important;
+}
+
+/* Make sure modal is on top of everything */
+[style*="z-index: 50"] {
+  z-index: 9998 !important;
+}
+
+/* FIX FOR MODAL */
+.z-\[9999\] {
+  z-index: 9999 !important;
+}
+
+/* Ensure modal backdrop is on top */
+.bg-black.bg-opacity-50 {
+  z-index: 9998 !important;
+}
+
+/* Make sure nothing covers the modal */
+.fixed {
+  position: fixed !important;
+}
+
