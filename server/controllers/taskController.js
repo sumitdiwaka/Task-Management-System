@@ -12,9 +12,7 @@ const sanitizeTaskData = (body, userId) => {
   };
 };
 
-// @desc    Get all tasks for logged in user
-// @route   GET /api/tasks
-// @access  Private
+
 const getTasks = async (req, res) => {
   try {
     console.log('=== GET TASKS ===');
@@ -63,9 +61,7 @@ const getTasks = async (req, res) => {
   }
 };
 
-// @desc    Get single task
-// @route   GET /api/tasks/:id
-// @access  Private
+
 const getTask = async (req, res) => {
   try {
     console.log('=== GET SINGLE TASK ===');
@@ -100,9 +96,7 @@ const getTask = async (req, res) => {
   }
 };
 
-// @desc    Create new task
-// @route   POST /api/tasks
-// @access  Private
+
 const createTask = async (req, res) => {
   try {
     console.log('=== CREATE TASK ===');
@@ -186,9 +180,7 @@ const createTask = async (req, res) => {
   }
 };
 
-// @desc    Update task
-// @route   PUT /api/tasks/:id
-// @access  Private
+
 const updateTask = async (req, res) => {
   try {
     console.log('=== UPDATE TASK ===');
@@ -251,9 +243,7 @@ const updateTask = async (req, res) => {
   }
 };
 
-// @desc    Delete task
-// @route   DELETE /api/tasks/:id
-// @access  Private
+
 const deleteTask = async (req, res) => {
   try {
     console.log('=== DELETE TASK ===');
@@ -289,45 +279,38 @@ const deleteTask = async (req, res) => {
   }
 };
 
-// @desc    Get task statistics
-// @route   GET /api/tasks/stats
-// @access  Private
+
 const getTaskStats = async (req, res) => {
   try {
     console.log('=== GET TASK STATS ===');
     console.log('User ID:', req.user.id);
     
-    const stats = await Task.aggregate([
-      { $match: { user: req.user.id } },
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 }
-        }
-      }
-    ]);
+    // Get all tasks for the user
+    const tasks = await Task.find({ user: req.user.id });
     
-    // Format stats
+    // Calculate statistics
+    const total = tasks.length;
+    const completed = tasks.filter(task => task.status === 'completed').length;
+    const pending = tasks.filter(task => task.status === 'pending').length;
+    const inProgress = tasks.filter(task => task.status === 'in-progress').length;
+    
+    
     const formattedStats = {
-      total: 0,
-      pending: 0,
-      'in-progress': 0,
-      completed: 0
+      total,
+      completed,
+      pending,
+      'in-progress': inProgress, 
+     
     };
     
-    stats.forEach(stat => {
-      formattedStats[stat._id] = stat.count;
-      formattedStats.total += stat.count;
-    });
-    
-    console.log('Stats:', formattedStats);
+    console.log('✅ Stats calculated:', formattedStats);
     
     res.json({
       success: true,
       data: formattedStats
     });
   } catch (error) {
-    console.error('Get stats error:', error);
+    console.error('❌ Get stats error:', error);
     res.status(500).json({
       success: false,
       error: 'Server error while fetching task statistics'

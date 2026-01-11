@@ -1,4 +1,8 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://task-management-system-1-ybit.onrender.com/api'
+  : 'http://localhost:5000/api';
+
+
 
 // Register user
 export const register = async (userData) => {

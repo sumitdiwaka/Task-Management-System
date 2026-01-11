@@ -9,6 +9,17 @@ const getAuthHeaders = () => {
   };
 };
 
+// Helper function to trigger dashboard update events
+const triggerDashboardUpdate = (eventName) => {
+  console.log(`Triggering event: ${eventName}`);
+  window.dispatchEvent(new CustomEvent(eventName));
+  
+  // Also trigger a generic task change event for flexibility
+  if (eventName !== 'task-changed') {
+    window.dispatchEvent(new CustomEvent('task-changed'));
+  }
+};
+
 // Get all tasks
 export const getTasks = async (filters = {}) => {
   try {
@@ -77,6 +88,12 @@ export const createTask = async (taskData) => {
     
     const data = await response.json();
     console.log('Task created:', data);
+    
+    // ====== ADDED: Trigger dashboard update ======
+    if (data.success) {
+      triggerDashboardUpdate('task-created');
+    }
+    
     return data;
   } catch (error) {
     console.error('Error creating task:', error);
@@ -101,6 +118,17 @@ export const updateTask = async (id, taskData) => {
     
     const data = await response.json();
     console.log('Task updated:', data);
+    
+    // ====== ADDED: Trigger dashboard update ======
+    if (data.success) {
+      triggerDashboardUpdate('task-updated');
+      
+      // Special event for status changes
+      if (taskData.status) {
+        triggerDashboardUpdate('task-status-changed');
+      }
+    }
+    
     return data;
   } catch (error) {
     console.error('Error updating task:', error);
@@ -124,6 +152,12 @@ export const deleteTask = async (id) => {
     
     const data = await response.json();
     console.log('Task deleted:', data);
+    
+   
+    if (data.success) {
+      triggerDashboardUpdate('task-deleted');
+    }
+    
     return data;
   } catch (error) {
     console.error('Error deleting task:', error);
@@ -147,4 +181,10 @@ export const getTaskStats = async () => {
     console.error('Error fetching task stats:', error);
     throw error;
   }
+};
+
+export const testDashboardUpdate = () => {
+  console.log('Testing dashboard update events...');
+  triggerDashboardUpdate('task-created');
+  return 'Test event triggered!';
 };

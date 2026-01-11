@@ -37,7 +37,6 @@ const validateLogin = [
     .notEmpty().withMessage('Password is required')
 ];
 
-// NEW: Separate validation for task creation (without user field)
 const validateTaskCreate = [
   check('title')
     .trim()
@@ -68,7 +67,7 @@ const validateTaskCreate = [
     })
 ];
 
-// NEW: Validation for task update (different rules)
+
 const validateTaskUpdate = [
   check('title')
     .optional()
@@ -94,12 +93,11 @@ const validateTaskUpdate = [
     .isISO8601().withMessage('Invalid date format')
 ];
 
-// Improved validation middleware that preserves non-validated fields
 const validate = (req, res, next) => {
   console.log('=== VALIDATION MIDDLEWARE ===');
   console.log('Original body:', req.body);
   
-  // Store ALL original fields (not just user)
+
   const originalBody = { ...req.body };
   
   const errors = validationResult(req);
@@ -111,8 +109,7 @@ const validate = (req, res, next) => {
     });
   }
   
-  // Restore all original fields, including user and any other fields
-  // that weren't in the validation schema
+
   req.body = {
     ...req.body, // Validated fields
     ...originalBody // Restore all original fields

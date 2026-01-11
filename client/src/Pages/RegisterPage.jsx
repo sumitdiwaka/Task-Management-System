@@ -152,7 +152,7 @@ const RegisterPage = () => {
               error={errors.password}
               required
               autoComplete="new-password"
-            //   helpText="Must be at least 6 characters"
+            
             />
 
             <Input

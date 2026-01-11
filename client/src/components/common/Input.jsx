@@ -10,7 +10,7 @@ const Input = ({
   error,
   disabled = false,
   required = false,
-  helpText,  // Add this
+  helpText,  
   className = '',
   ...props
 }) => {

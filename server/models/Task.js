@@ -42,7 +42,6 @@ const TaskSchema = new mongoose.Schema({
   }
 });
 
-// NO MIDDLEWARE AT ALL - Let Mongoose handle validation
-// Remove ALL pre('save') and pre('validate') hooks
+
 
 module.exports = mongoose.model('Task', TaskSchema);

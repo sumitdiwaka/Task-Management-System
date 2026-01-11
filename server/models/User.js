@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Hash password - SIMPLE WORKING VERSION
+// Hash password 
 UserSchema.pre('save', async function() {
   // Only hash if password is modified
   if (this.isModified('password')) {

@@ -24,14 +24,9 @@ router.post('/login', login);
 // @access  Private
 router.get('/profile', protect, getProfile);
 
-// @route   PUT /api/auth/profile
-// @desc    Update user profile
-// @access  Private
 router.put('/profile', protect, updateProfile);
 
-// @route   PUT /api/auth/password
-// @desc    Update user password
-// @access  Private
+
 router.put('/password', protect, updatePassword);
 
 module.exports = router;
