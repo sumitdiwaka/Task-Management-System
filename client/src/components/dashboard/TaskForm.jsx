@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Spinner, Alert } from '../common';
+import { Modal, Button, Spinner, Alert } from '../common/Index';
 import * as taskService from '../../services/taskService';
 import toast from 'react-hot-toast';
 
