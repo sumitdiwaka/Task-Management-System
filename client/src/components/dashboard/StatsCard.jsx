@@ -9,6 +9,8 @@ import {
 import { Card, Spinner } from '../common/Index';
 import * as taskService from '../../Services/taskService';
 
+// StatsCard component to display task statistics
+
 const StatsCard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
