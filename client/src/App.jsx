@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './Pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import RegisterPage from './Pages/RegisterPage';
 import DashboardPage from './Pages/DashboardPage';
 import ProfilePage from './Pages/ProfilePage';
 import { Toaster } from 'react-hot-toast';
