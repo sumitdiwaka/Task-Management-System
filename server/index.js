@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS - Update this line for Vite
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: ['http://localhost:5173', 'http://localhost:3000','https://task-management-system-two-phi.vercel.app'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
