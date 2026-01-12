@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Layout } from '../components/layout';
-import { Button, Input, Alert, Spinner } from '../components/common';
+import { Button, Input, Alert, Spinner } from '../components/common/Index';
 import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
