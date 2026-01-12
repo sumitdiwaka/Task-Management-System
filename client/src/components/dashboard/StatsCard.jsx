@@ -7,7 +7,7 @@ import {
   ArrowPathIcon,
 } from '@heroicons/react/24/outline';
 import { Card, Spinner } from '../common/Index';
-import * as taskService from '../Services/taskService';
+import * as taskService from '../..Services/taskService';
 
 const StatsCard = () => {
   const [stats, setStats] = useState(null);
