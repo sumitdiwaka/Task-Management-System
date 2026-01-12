@@ -6,7 +6,7 @@ import {
   ExclamationTriangleIcon,
   ArrowPathIcon,
 } from '@heroicons/react/24/outline';
-import { Card, Spinner } from '../common';
+import { Card, Spinner } from '../common/Index';
 import * as taskService from '../../Services/taskService';
 
 const StatsCard = () => {
