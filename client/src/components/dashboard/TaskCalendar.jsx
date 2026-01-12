@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Spinner } from '../common/Index';
-import * as taskService from '../..Services/taskService';
+import * as taskService from '../../Services/taskService';
 import { formatDate } from '../../utils/helpers';
 
 const TaskCalendar = () => {

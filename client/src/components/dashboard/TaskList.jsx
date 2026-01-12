@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PencilIcon, TrashIcon, CheckCircleIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Button, Badge, Spinner } from '../common/Index';
-import * as taskService from '../..Services/taskService';
+import * as taskService from '../../Services/taskService';
 import { formatDate } from '../../utils/helpers';
 import TaskForm from '../dashboard/TaskForm';
 import toast from 'react-hot-toast';

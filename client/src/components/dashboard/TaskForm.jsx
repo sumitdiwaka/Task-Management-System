@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Spinner, Alert } from '../common/Index';
-import * as taskService from '../../services/taskService';
+import * as taskService from '../../Services/taskService';
 import toast from 'react-hot-toast';
 
 const TaskForm = ({ task, isOpen, onClose, onSuccess }) => {
