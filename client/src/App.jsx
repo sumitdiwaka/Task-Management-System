@@ -7,6 +7,7 @@ import DashboardPage from './Pages/DashboardPage';
 import ProfilePage from './Pages/ProfilePage';
 import { Toaster } from 'react-hot-toast';
 
+//start of App component
 function App() {
   const { loading } = useAuth();
 
