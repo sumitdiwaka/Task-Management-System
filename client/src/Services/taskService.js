@@ -75,7 +75,7 @@ export const getTask = async (id) => {
 export const createTask = async (taskData) => {
   try {
     console.log('Creating task:', taskData);
-    onsole.log('Sending taskData to backend:', taskData);
+    console.log('Sending taskData to backend:', taskData);
     
     const response = await fetch(`${API_URL}/tasks`, {
       method: 'POST',
