@@ -125,30 +125,57 @@ const validateTaskUpdate = [
 //     .isISO8601().withMessage('Invalid date format')
 // ];
 
-const validate = (req, res, next) => {
-  console.log('=== VALIDATION MIDDLEWARE ===');
-  console.log('Original body:', req.body);
+// const validate = (req, res, next) => {
+//   console.log('=== VALIDATION MIDDLEWARE ===');
+//   console.log('Original body:', req.body);
   
 
-  const originalBody = { ...req.body };
+//   const originalBody = { ...req.body };
+  
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     console.log('Validation errors:', errors.array());
+//     return res.status(400).json({
+//       success: false,
+//       errors: errors.array()
+//     });
+//   }
+  
+
+//   req.body = {
+//     ...req.body, // Validated fields
+//     ...originalBody // Restore all original fields
+//   };
+  
+//   console.log('Body after validation restore:', req.body);
+//   console.log('Validation passed ✓');
+//   next();
+// };
+
+const validate = (req, res, next) => {
+  console.log('=== VALIDATION MIDDLEWARE ===');
+  console.log('Request body:', JSON.stringify(req.body, null, 2));
   
   const errors = validationResult(req);
+  
   if (!errors.isEmpty()) {
-    console.log('Validation errors:', errors.array());
+    console.log('❌ Validation errors:', errors.array());
+    
+    // Format errors for better response
+    const errorMessages = errors.array().map(error => ({
+      field: error.path,
+      message: error.msg,
+      value: error.value
+    }));
+    
     return res.status(400).json({
       success: false,
-      errors: errors.array()
+      message: 'Validation failed',
+      errors: errorMessages
     });
   }
   
-
-  req.body = {
-    ...req.body, // Validated fields
-    ...originalBody // Restore all original fields
-  };
-  
-  console.log('Body after validation restore:', req.body);
-  console.log('Validation passed ✓');
+  console.log('✅ Validation passed');
   next();
 };
 
