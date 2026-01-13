@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 
 const TaskSchema = new mongoose.Schema({
-  title: {
+  // title: {
+  //   type: String,
+  //   required: [true, 'Please provide a task title'],
+  //   trim: true,
+  //   maxlength: [100, 'Title cannot be more than 100 characters']
+  // },
+
+    title: {
     type: String,
     required: [true, 'Please provide a task title'],
     trim: true,
@@ -42,6 +49,22 @@ const TaskSchema = new mongoose.Schema({
   }
 });
 
+TaskSchema.pre('save', function(next) {
+  // Only validate required fields on NEW documents (creation)
+  if (this.isNew) {
+    if (!this.title || this.title.trim() === '') {
+      next(new Error('Task title is required'));
+      return;
+    }
+  }
+  
+  // Update the updatedAt timestamp
+  if (this.isModified()) {
+    this.updatedAt = Date.now();
+  }
+  
+  next();
+});
 
 
 module.exports = mongoose.model('Task', TaskSchema);
