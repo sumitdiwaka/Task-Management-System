@@ -79,7 +79,7 @@ const validateTaskCreate = [
 
 const validateTaskUpdate = [
   check('title')
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .notEmpty().withMessage('Task title cannot be empty')
     .isLength({ max: 100 }).withMessage('Title cannot exceed 100 characters'),
@@ -90,15 +90,15 @@ const validateTaskUpdate = [
     .isLength({ max: 500 }).withMessage('Description cannot exceed 500 characters'),
   
   check('status')
-    .optional()
+    .optional({ checkFalsy: true })
     .isIn(['pending', 'in-progress', 'completed']).withMessage('Invalid status'),
   
   check('priority')
-    .optional()
+    .optional({ checkFalsy: true })
     .isIn(['low', 'medium', 'high']).withMessage('Invalid priority'),
   
   check('dueDate')
-    .optional()
+    .optional({ checkFalsy: true })
     .isISO8601().withMessage('Invalid date format')
 ];
 
