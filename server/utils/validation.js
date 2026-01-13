@@ -59,12 +59,21 @@ const validateTaskCreate = [
   check('dueDate')
     .optional()
     .isISO8601().withMessage('Invalid date format')
-    .custom(value => {
-      if (value && new Date(value) < new Date()) {
-        throw new Error('Due date cannot be in the past');
-      }
-      return true;
-    })
+   .custom(value => {
+  if (value) {
+    const selectedDate = new Date(value);
+    const today = new Date();
+    
+    // Set both to midnight to compare just the date, not the time
+    selectedDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0); 
+    
+    if (selectedDate < today) {
+      throw new Error('Due date cannot be in the past');
+    }
+  }
+  return true;
+})
 ];
 
 
