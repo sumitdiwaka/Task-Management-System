@@ -49,22 +49,6 @@ const TaskSchema = new mongoose.Schema({
   }
 });
 
-TaskSchema.pre('save', function(next) {
-  // Only validate required fields on NEW documents (creation)
-  if (this.isNew) {
-    if (!this.title || this.title.trim() === '') {
-      next(new Error('Task title is required'));
-      return;
-    }
-  }
-  
-  // Update the updatedAt timestamp
-  if (this.isModified()) {
-    this.updatedAt = Date.now();
-  }
-  
-  next();
-});
 
 
 module.exports = mongoose.model('Task', TaskSchema);

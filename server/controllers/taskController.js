@@ -181,88 +181,39 @@ const createTask = async (req, res) => {
 };
 
 
-// const updateTask = async (req, res) => {
-//   try {
-//     console.log('=== UPDATE TASK ===');
-//     console.log('Task ID:', req.params.id);
-//     console.log('User ID:', req.user.id);
-//     console.log('Update data:', req.body);
-    
-//     // Find task belonging to user
-//     const task = await Task.findOne({
-//       _id: req.params.id,
-//       user: req.user.id
-//     });
-    
-//     if (!task) {
-//       console.log('Task not found for update');
-//       return res.status(404).json({
-//         success: false,
-//         error: 'Task not found'
-//       });
-//     }
-    
-//     console.log('Task found:', task.title);
-    
-//     // Define allowed updates
-//     const allowedUpdates = ['title', 'description', 'status', 'priority', 'dueDate'];
-//     let hasUpdates = false;
-    
-//     // Apply updates
-//     allowedUpdates.forEach(field => {
-//       if (req.body[field] !== undefined && req.body[field] !== task[field]) {
-//         task[field] = req.body[field];
-//         hasUpdates = true;
-//         console.log(`Updating ${field}: ${task[field]}`);
-//       }
-//     });
-    
-//     if (!hasUpdates) {
-//       console.log('No updates provided');
-//       return res.status(400).json({
-//         success: false,
-//         error: 'No valid updates provided'
-//       });
-//     }
-    
-//     // Save the updated task
-//     await task.save();
-    
-//     console.log('✅ Task updated successfully');
-    
-//     res.json({
-//       success: true,
-//       data: task
-//     });
-//   } catch (error) {
-//     console.error('Update task error:', error);
-//     res.status(500).json({
-//       success: false,
-//       error: 'Server error while updating task'
-//     });
-//   }
-// };
-
 const updateTask = async (req, res) => {
   try {
-    console.log('=== UPDATE TASK DEBUG ===');
+    console.log('=== UPDATE TASK ===');
     console.log('Task ID:', req.params.id);
     console.log('User ID:', req.user.id);
     console.log('Update data:', req.body);
-    console.log('Update data keys:', Object.keys(req.body));
     
-    // ====== IMPORTANT FIX: Use findOneAndUpdate ======
-    // This only validates fields that are being updated
+    // Find task belonging to user
+    const task = await Task.findOne({
+      _id: req.params.id,
+      user: req.user.id
+    });
+    
+    if (!task) {
+      console.log('Task not found for update');
+      return res.status(404).json({
+        success: false,
+        error: 'Task not found'
+      });
+    }
+    
+    console.log('Task found:', task.title);
+    
+    // Define allowed updates
     const allowedUpdates = ['title', 'description', 'status', 'priority', 'dueDate'];
-    const updates = {};
     let hasUpdates = false;
     
-    // Build update object with only provided fields
+    // Apply updates
     allowedUpdates.forEach(field => {
-      if (req.body[field] !== undefined) {
-        updates[field] = req.body[field];
+      if (req.body[field] !== undefined && req.body[field] !== task[field]) {
+        task[field] = req.body[field];
         hasUpdates = true;
-        console.log(`Will update ${field}:`, req.body[field]);
+        console.log(`Updating ${field}: ${task[field]}`);
       }
     });
     
@@ -274,64 +225,113 @@ const updateTask = async (req, res) => {
       });
     }
     
-    // Add updatedAt timestamp
-    updates.updatedAt = Date.now();
+    // Save the updated task
+    await task.save();
     
-    console.log('Final updates object:', updates);
-    
-    // Use findOneAndUpdate with $set
-    const updatedTask = await Task.findOneAndUpdate(
-      {
-        _id: req.params.id,
-        user: req.user.id
-      },
-      { $set: updates },
-      {
-        new: true, // Return updated document
-        runValidators: true, // Run validation on updated fields only
-        context: 'query' // Important for proper validation
-      }
-    );
-    
-    if (!updatedTask) {
-      console.log('Task not found for update');
-      return res.status(404).json({
-        success: false,
-        error: 'Task not found'
-      });
-    }
-    
-    console.log('✅ Task updated successfully:', updatedTask.title);
+    console.log('✅ Task updated successfully');
     
     res.json({
       success: true,
-      data: updatedTask
+      data: task
     });
   } catch (error) {
-    console.error('❌ Update task error:', error.message);
-    
-    // Handle validation errors
-    if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(val => val.message);
-      return res.status(400).json({
-        success: false,
-        error: `Validation error: ${messages.join(', ')}`
-      });
-    }
-    
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        success: false,
-        error: `Invalid ${error.path}: ${error.value}`
-      });
-    }
-    
+    console.error('Update task error:', error);
     res.status(500).json({
       success: false,
       error: 'Server error while updating task'
     });
   }
 };
+
+// const updateTask = async (req, res) => {
+//   try {
+//     console.log('=== UPDATE TASK DEBUG ===');
+//     console.log('Task ID:', req.params.id);
+//     console.log('User ID:', req.user.id);
+//     console.log('Update data:', req.body);
+//     console.log('Update data keys:', Object.keys(req.body));
+    
+//     // ====== IMPORTANT FIX: Use findOneAndUpdate ======
+//     // This only validates fields that are being updated
+//     const allowedUpdates = ['title', 'description', 'status', 'priority', 'dueDate'];
+//     const updates = {};
+//     let hasUpdates = false;
+    
+//     // Build update object with only provided fields
+//     allowedUpdates.forEach(field => {
+//       if (req.body[field] !== undefined) {
+//         updates[field] = req.body[field];
+//         hasUpdates = true;
+//         console.log(`Will update ${field}:`, req.body[field]);
+//       }
+//     });
+    
+//     if (!hasUpdates) {
+//       console.log('No updates provided');
+//       return res.status(400).json({
+//         success: false,
+//         error: 'No valid updates provided'
+//       });
+//     }
+    
+//     // Add updatedAt timestamp
+//     updates.updatedAt = Date.now();
+    
+//     console.log('Final updates object:', updates);
+    
+//     // Use findOneAndUpdate with $set
+//     const updatedTask = await Task.findOneAndUpdate(
+//       {
+//         _id: req.params.id,
+//         user: req.user.id
+//       },
+//       { $set: updates },
+//       {
+//         new: true, // Return updated document
+//         runValidators: true, // Run validation on updated fields only
+//         context: 'query' // Important for proper validation
+//       }
+//     );
+    
+//     if (!updatedTask) {
+//       console.log('Task not found for update');
+//       return res.status(404).json({
+//         success: false,
+//         error: 'Task not found'
+//       });
+//     }
+    
+//     console.log('✅ Task updated successfully:', updatedTask.title);
+    
+//     res.json({
+//       success: true,
+//       data: updatedTask
+//     });
+//   } catch (error) {
+//     console.error('❌ Update task error:', error.message);
+    
+//     // Handle validation errors
+//     if (error.name === 'ValidationError') {
+//       const messages = Object.values(error.errors).map(val => val.message);
+//       return res.status(400).json({
+//         success: false,
+//         error: `Validation error: ${messages.join(', ')}`
+//       });
+//     }
+    
+//     if (error.name === 'CastError') {
+//       return res.status(400).json({
+//         success: false,
+//         error: `Invalid ${error.path}: ${error.value}`
+//       });
+//     }
+    
+//     res.status(500).json({
+//       success: false,
+//       error: 'Server error while updating task'
+//     });
+//   }
+// };
 
 
 const deleteTask = async (req, res) => {

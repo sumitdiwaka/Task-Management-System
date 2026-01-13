@@ -64,8 +64,8 @@ const TaskForm = ({ task, isOpen, onClose, onSuccess }) => {
         description: formData.description,
         status: formData.status,
         priority: formData.priority,
-        // dueDate: formData.dueDate ? `${formData.dueDate}T23:59:59.999Z` : null,
-        dueDate: formData.dueDate || null,
+        dueDate: formData.dueDate ? `${formData.dueDate}T23:59:59.999Z` : null,
+        // dueDate: formData.dueDate || null,
       };
 
       let result;
