@@ -76,12 +76,10 @@ const validateTaskCreate = [
 })
 ];
 
-
 const validateTaskUpdate = [
   check('title')
-    .optional({ checkFalsy: true })
+    .optional({ checkFalsy: true }) // Added checkFalsy: true
     .trim()
-    .notEmpty().withMessage('Task title cannot be empty')
     .isLength({ max: 100 }).withMessage('Title cannot exceed 100 characters'),
   
   check('description')
@@ -98,9 +96,34 @@ const validateTaskUpdate = [
     .isIn(['low', 'medium', 'high']).withMessage('Invalid priority'),
   
   check('dueDate')
-    .optional({ checkFalsy: true })
+    .optional({ checkFalsy: true }) // Very important for updates
     .isISO8601().withMessage('Invalid date format')
 ];
+
+// const validateTaskUpdate = [
+//   check('title')
+//     .optional({ checkFalsy: true })
+//     .trim()
+//     .notEmpty().withMessage('Task title cannot be empty')
+//     .isLength({ max: 100 }).withMessage('Title cannot exceed 100 characters'),
+  
+//   check('description')
+//     .optional({ checkFalsy: true })
+//     .trim()
+//     .isLength({ max: 500 }).withMessage('Description cannot exceed 500 characters'),
+  
+//   check('status')
+//     .optional({ checkFalsy: true })
+//     .isIn(['pending', 'in-progress', 'completed']).withMessage('Invalid status'),
+  
+//   check('priority')
+//     .optional({ checkFalsy: true })
+//     .isIn(['low', 'medium', 'high']).withMessage('Invalid priority'),
+  
+//   check('dueDate')
+//     .optional({ checkFalsy: true })
+//     .isISO8601().withMessage('Invalid date format')
+// ];
 
 const validate = (req, res, next) => {
   console.log('=== VALIDATION MIDDLEWARE ===');
