@@ -245,35 +245,32 @@ const createTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
-    // 1. Build the update object from allowed fields
-    const allowedUpdates = ['title', 'description', 'status', 'priority', 'dueDate'];
-    const updates = {};
+    const { id } = req.params;
     
-    allowedUpdates.forEach(field => {
-      if (req.body[field] !== undefined) {
-        updates[field] = req.body[field];
+    // 1. Filter out only the fields we want to allow for updates
+    // This prevents accidental updates to 'user' or '_id'
+    const allowedFields = ['title', 'description', 'status', 'priority', 'dueDate'];
+    const updateData = {};
+    
+    Object.keys(req.body).forEach(key => {
+      if (allowedFields.includes(key)) {
+        updateData[key] = req.body[key];
       }
     });
 
-    // 2. Add/Update the timestamp
-    updates.updatedAt = Date.now();
-
-    // 3. Find and update in one step
-    // This bypasses the manual "hasUpdates" check and updates even if values are same
-    const updatedTask = await Task.findOneAndUpdate(
-      {
-        _id: req.params.id,
-        user: req.user.id // Security: Ensure user owns the task
-      },
-      { $set: updates },
-      {
-        new: true,           // Return the modified document
-        runValidators: true, // Ensure the new data follows the Schema rules
-        context: 'query'
+    // 2. Use findOneAndUpdate to bypass the manual "hasUpdates" check
+    // This will return 200 even if the data is the same as before
+    const task = await Task.findOneAndUpdate(
+      { _id: id, user: req.user.id }, 
+      { $set: updateData }, 
+      { 
+        new: true,           // Return the updated task
+        runValidators: true, // Check against your Schema (enum, etc.)
+        context: 'query' 
       }
     );
 
-    if (!updatedTask) {
+    if (!task) {
       return res.status(404).json({
         success: false,
         error: 'Task not found'
@@ -282,16 +279,21 @@ const updateTask = async (req, res) => {
 
     res.json({
       success: true,
-      data: updatedTask
+      data: task
     });
+    
   } catch (error) {
-    console.error('Update error:', error.message);
+    console.error('Update Error:', error.message);
+    
+    // Catch validation errors (like wrong enum value)
     if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
       return res.status(400).json({
         success: false,
-        error: Object.values(error.errors).map(val => val.message).join(', ')
+        error: messages.join(', ')
       });
     }
+
     res.status(500).json({
       success: false,
       error: 'Server error while updating task'
