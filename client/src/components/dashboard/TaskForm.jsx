@@ -59,14 +59,34 @@ const TaskForm = ({ task, isOpen, onClose, onSuccess }) => {
 
     try {
       // Prepare payload
+      // const payload = {
+      //   title: formData.title,
+      //   description: formData.description,
+      //   status: formData.status,
+      //   priority: formData.priority,
+      //   dueDate: formData.dueDate ? `${formData.dueDate}T23:59:59.999Z` : null,
+      //   // dueDate: formData.dueDate || null,
+      // };
+
       const payload = {
-        title: formData.title,
-        description: formData.description,
-        status: formData.status,
-        priority: formData.priority,
-        dueDate: formData.dueDate ? `${formData.dueDate}T23:59:59.999Z` : null,
-        // dueDate: formData.dueDate || null,
-      };
+  title: formData.title.trim(),
+  description: formData.description.trim(),
+  status: formData.status,
+  priority: formData.priority,
+};
+
+// Handle dueDate correctly
+if (formData.dueDate) {
+  const date = new Date(formData.dueDate);
+  if (!isNaN(date.getTime())) {
+    // Set to end of day
+    date.setHours(23, 59, 59, 999);
+    payload.dueDate = date.toISOString();
+  }
+  // If date is invalid, don't include dueDate field
+} else {
+  payload.dueDate = null;
+}
 
       let result;
       if (isEdit) {
