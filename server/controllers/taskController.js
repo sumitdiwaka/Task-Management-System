@@ -256,55 +256,88 @@ const createTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
+    console.log('🔍 === UPDATE TASK DEBUG ===');
+    console.log('Task ID:', req.params.id);
+    console.log('User ID:', req.user.id);
+    console.log('Request body (partial):', req.body);
+    
     const { id } = req.params;
     
-    // 1. Filter out only the fields we want to allow for updates
-    // This prevents accidental updates to 'user' or '_id'
-    const allowedFields = ['title', 'description', 'status', 'priority', 'dueDate'];
-    const updateData = {};
-    
-    Object.keys(req.body).forEach(key => {
-      if (allowedFields.includes(key)) {
-        updateData[key] = req.body[key];
-      }
+    // 1. First, find the existing task
+    const existingTask = await Task.findOne({
+      _id: id,
+      user: req.user.id
     });
-
-    // 2. Use findOneAndUpdate to bypass the manual "hasUpdates" check
-    // This will return 200 even if the data is the same as before
-const task = await Task.findOneAndUpdate(
-  { _id: id, user: req.user.id }, 
-  { $set: updateData }, 
-  { 
-    new: true, 
-    runValidators: true, // TURN THIS BACK ON
-    context: 'query' 
-  }
-);
-
-    if (!task) {
+    
+    if (!existingTask) {
+      console.log('❌ Task not found');
       return res.status(404).json({
         success: false,
         error: 'Task not found'
       });
     }
+    
+    console.log('✅ Existing task found. Title:', existingTask.title);
+    
+    // 2. Define allowed updates and prepare update data
+    const allowedFields = ['title', 'description', 'status', 'priority', 'dueDate'];
+    const updateData = {};
+    
+    // Check each field in request
+    Object.keys(req.body).forEach(key => {
+      if (allowedFields.includes(key)) {
+        // For title: if empty or not provided, use existing title
+        if (key === 'title') {
+          if (req.body[key] && req.body[key].trim() !== '') {
+            updateData[key] = req.body[key].trim();
+          } else {
+            // Keep existing title if new one is empty
+            updateData[key] = existingTask.title;
+          }
+        } else {
+          // For other fields, use provided value or keep existing
+          updateData[key] = req.body[key] !== undefined ? req.body[key] : existingTask[key];
+        }
+      }
+    });
+    
+    // 3. Ensure title is always included (required by schema)
+    if (!updateData.title) {
+      updateData.title = existingTask.title;
+    }
+    
+    console.log('📦 Final update data:', updateData);
+    
+    // 4. Update the task
+    const task = await Task.findOneAndUpdate(
+      { _id: id, user: req.user.id }, 
+      { $set: updateData }, 
+      { 
+        new: true, 
+        runValidators: true,
+        context: 'query' 
+      }
+    );
 
+    console.log('✅ Task updated successfully');
+    
     res.json({
       success: true,
       data: task
     });
     
   } catch (error) {
-    console.error('Update Error:', error.message);
+    console.error('🔥 UPDATE ERROR:', error.message);
+    console.error('Error details:', error);
     
-    // Catch validation errors (like wrong enum value)
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map(val => val.message);
       return res.status(400).json({
         success: false,
-        error: messages.join(', ')
+        error: `Validation failed: ${messages.join(', ')}`
       });
     }
-
+    
     res.status(500).json({
       success: false,
       error: 'Server error while updating task'
