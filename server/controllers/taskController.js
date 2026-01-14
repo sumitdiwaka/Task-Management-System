@@ -1,14 +1,25 @@
 const Task = require('../models/Task');
 
 // Helper function to sanitize task data
+// const sanitizeTaskData = (body, userId) => {
+//   return {
+//     title: body.title || '',
+//     description: body.description || '',
+//     status: body.status || 'pending',
+//     priority: body.priority || 'medium',
+//     dueDate: body.dueDate || null,
+//     user: userId // Always use authenticated user ID
+//   };
+// };
+
 const sanitizeTaskData = (body, userId) => {
   return {
-    title: body.title || '',
+    title: body.title && body.title.trim() !== '' ? body.title.trim() : undefined,
     description: body.description || '',
     status: body.status || 'pending',
     priority: body.priority || 'medium',
     dueDate: body.dueDate || null,
-    user: userId // Always use authenticated user ID
+    user: userId
   };
 };
 
@@ -260,12 +271,12 @@ const updateTask = async (req, res) => {
 
     // 2. Use findOneAndUpdate to bypass the manual "hasUpdates" check
     // This will return 200 even if the data is the same as before
-  const task = await Task.findOneAndUpdate(
+const task = await Task.findOneAndUpdate(
   { _id: id, user: req.user.id }, 
   { $set: updateData }, 
   { 
     new: true, 
-    runValidators: false, // Turn this off temporarily to see if the 400 error disappears
+    runValidators: true, // TURN THIS BACK ON
     context: 'query' 
   }
 );
