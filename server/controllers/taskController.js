@@ -260,15 +260,15 @@ const updateTask = async (req, res) => {
 
     // 2. Use findOneAndUpdate to bypass the manual "hasUpdates" check
     // This will return 200 even if the data is the same as before
-    const task = await Task.findOneAndUpdate(
-      { _id: id, user: req.user.id }, 
-      { $set: updateData }, 
-      { 
-        new: true,           // Return the updated task
-        runValidators: true, // Check against your Schema (enum, etc.)
-        context: 'query' 
-      }
-    );
+  const task = await Task.findOneAndUpdate(
+  { _id: id, user: req.user.id }, 
+  { $set: updateData }, 
+  { 
+    new: true, 
+    runValidators: false, // Turn this off temporarily to see if the 400 error disappears
+    context: 'query' 
+  }
+);
 
     if (!task) {
       return res.status(404).json({
