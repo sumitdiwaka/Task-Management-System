@@ -96,9 +96,23 @@ const validateTaskUpdate = [
     .optional({ checkFalsy: true })
     .isIn(['low', 'medium', 'high']).withMessage('Invalid priority'),
   
+  // check('dueDate')
+  //   .optional({ checkFalsy: true }) // Very important for updates
+  //   .isISO8601().withMessage('Invalid date format')
+
   check('dueDate')
-    .optional({ checkFalsy: true }) // Very important for updates
-    .isISO8601().withMessage('Invalid date format')
+  .optional()
+  .custom(value => {
+    // Allow null, empty, or falsy values for updates
+    if (!value || value === '' || value === null) return true;
+    
+    // Check if it's a valid date
+    const date = new Date(value);
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid date format');
+    }
+    return true;
+  })
 ];
 
 // const validateTaskUpdate = [
