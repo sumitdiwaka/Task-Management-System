@@ -78,7 +78,7 @@ const validateTaskCreate = [
 
 const validateTaskUpdate = [
   check('title')
-    .optional({ checkFalsy: true }) // Added checkFalsy: true
+    .optional() // Added checkFalsy: true
     .trim()
     //  .notEmpty().withMessage('Task title cannot be empty')
     .isLength({ max: 100 }).withMessage('Title cannot exceed 100 characters'),
